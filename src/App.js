@@ -1,6 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
+const randomChoice = (arr) => {
+  return arr[Math.floor(arr.length * Math.random())];
+}
+
 const decodeHTML = (html) => {
   const txt = document.createElement('textarea');
   txt.innerHTML = html;
@@ -79,6 +83,7 @@ const TriviaGame = () => {
   return (
     <div>
       <p>{decodedQuestion}</p>
+      {console.log(currentQuestion)}
       <ul>
         {currentQuestion.incorrect_answers.map((answer, index) => (
           <li key={index}>
