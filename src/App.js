@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
-const randomChoice = (arr) => {
-  return arr[Math.floor(arr.length * Math.random())];
+const randomInteger = (i) => {
+  return Math.floor(i * Math.random());
 }
 
 const decodeHTML = (html) => {
@@ -20,6 +20,7 @@ const TriviaGame = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showingAnswer, setShowingAnswer] = useState(false);
+  const [correctAnswerInsertionIndex, setCorrectAnswerInsertionIndex] = useState(0);
 
   // Fetch a set of questions from the Open Trivia DB API
   useEffect(() => {
@@ -37,6 +38,11 @@ const TriviaGame = () => {
     };
     fetchQuestions();
   }, []);
+
+  // Assuming there are always four choices we can randomly get an index to put the answer at so that it's not always in the same place and therefore easily guessed
+  useEffect(() => {
+    setCorrectAnswerInsertionIndex(Math.floor(3 * Math.random()));
+  }, [currentQuestionIndex])
 
   // Render the game UI
   if (loading) {
@@ -83,39 +89,45 @@ const TriviaGame = () => {
   return (
     <div>
       <p>{decodedQuestion}</p>
-      {console.log(currentQuestion)}
+      {/* {console.log(currentQuestion)} */}
       <ul>
+        
         {currentQuestion.incorrect_answers.map((answer, index) => (
-          <li key={index}>
-            <button
-              onClick={() => {
-                handleAnswer(decodeHTML(answer));
-              }}
-              style={
-                showingAnswer && answer !== currentQuestion.correct_answer
-                  ? { backgroundColor: 'red' }
-                  : {}
-              }
-            >
-              {decodeHTML(answer)}
-            </button>
-          </li>
-        ))}
-        <li>
-          <button
-            onClick={() => {
-              handleAnswer(decodeHTML(currentQuestion.correct_answer));
-            }}
-            style={
-              showingAnswer &&
-              decodeHTML(currentQuestion.correct_answer) === currentQuestion.correct_answer
-                ? { backgroundColor: 'green' }
-                : {}
+          <>
+            {index === correctAnswerInsertionIndex && 
+              <li>
+                <button
+                  onClick={() => {
+                    handleAnswer(decodeHTML(currentQuestion.correct_answer));
+                  }}
+                  style={
+                    showingAnswer &&
+                    decodeHTML(currentQuestion.correct_answer) === currentQuestion.correct_answer
+                      ? { backgroundColor: 'green' }
+                      : {}
+                  }
+                >
+                  {decodeHTML(currentQuestion.correct_answer)}
+                </button>
+              </li>
             }
-          >
-            {decodeHTML(currentQuestion.correct_answer)}
-          </button>
-        </li>
+            <li key={index}>
+              <button
+                onClick={() => {
+                  handleAnswer(decodeHTML(answer));
+                }}
+                style={
+                  showingAnswer && answer !== currentQuestion.correct_answer
+                    ? { backgroundColor: 'red' }
+                    : {}
+                }
+              >
+                {decodeHTML(answer)}
+              </button>
+            </li>
+          </>
+        ))}
+        
       </ul>
       <p>
         Correct: {score} Incorrect: {incorrectCount}
