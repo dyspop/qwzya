@@ -21,13 +21,19 @@ const TriviaGame = () => {
   const [error, setError] = useState(null);
   const [showingAnswer, setShowingAnswer] = useState(false);
   const [correctAnswerInsertionIndex, setCorrectAnswerInsertionIndex] = useState(0);
+  const [quizLength, setQuizLength] = useState(10);
+
+  // Generate the URL for the Twitter web intent for creating a new tweet
+  const tweetUrl = encodeURI(
+    `https://twitter.com/intent/tweet?text=I just scored ${score}/${quizLength} in the TriviaGame on Qwzya! Can you beat me? #trivia #game #qwzya`
+  );
 
   // Fetch a set of questions from the Open Trivia DB API
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
         const response = await axios.get(
-          'https://opentdb.com/api.php?amount=10&category=9&difficulty=easy&type=multiple'
+          `https://opentdb.com/api.php?amount=${quizLength}&category=9&difficulty=easy&type=multiple`
         );
         setQuestions(response.data.results);
         setLoading(false);
@@ -55,6 +61,9 @@ const TriviaGame = () => {
     return (
       <div>
         <p>Game over! Your score is: {score}</p>
+        <a href={tweetUrl} target="_blank" rel="noopener noreferrer">
+          Tweet Score
+        </a>
         <button
           onClick={() => {
             setCurrentQuestionIndex(0);
