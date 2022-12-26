@@ -21,11 +21,11 @@ const TriviaGame = () => {
   const [error, setError] = useState(null);
   const [showingAnswer, setShowingAnswer] = useState(false);
   const [correctAnswerInsertionIndex, setCorrectAnswerInsertionIndex] = useState(0);
-  const [quizLength, setQuizLength] = useState(10);
+  const [quizLength, setQuizLength] = useState(1);
 
   // Generate the URL for the Twitter web intent for creating a new tweet
   const tweetUrl = encodeURI(
-    `https://twitter.com/intent/tweet?text=I just scored ${score}/${quizLength} in the TriviaGame on Qwzya! Can you beat me? #trivia #game #qwzya`
+    `https://twitter.com/intent/tweet?url=https://qwzya.com&text=I just scored ${Math.round(score/quizLength)*100}% in the Trivia Game on Qwzya! Can you beat me? #trivia #game #qwzya`
   );
 
   // Fetch a set of questions from the Open Trivia DB API
