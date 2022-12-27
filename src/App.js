@@ -3,6 +3,7 @@ import axios from 'axios';
 import logo from './logo.svg';
 
 
+
 const randomInteger = (i) => {
   return Math.floor(i * Math.random());
 }
@@ -148,11 +149,11 @@ const TriviaGame = () => {
 
 const App = () => {
   return (
-    <>
-      <img src={logo} alt="Qwzya" />
+    <div className='container container-xxl text-center m-4 p-4'>
+      <img src={logo} alt="Qwzya" className='logo' width="50%" />
       <p>What do you know?</p>
       <TriviaGame />
-    </>
+    </div>
   )
 }
 
