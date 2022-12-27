@@ -23,7 +23,7 @@ const TriviaGame = () => {
   const [error, setError] = useState(null);
   const [showingAnswer, setShowingAnswer] = useState(false);
   const [correctAnswerInsertionIndex, setCorrectAnswerInsertionIndex] = useState(0);
-  const [quizLength, setQuizLength] = useState(1);
+  const [quizLength, setQuizLength] = useState(10);
 
   // Generate the URL for the Twitter web intent for creating a new tweet
   const tweetUrl = encodeURI(
