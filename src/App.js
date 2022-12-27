@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import logo from './logo.svg';
+import Button from 'react-bootstrap/Button';
 
 
 
@@ -62,12 +63,16 @@ const TriviaGame = () => {
   }
   if (currentQuestionIndex >= questions.length) {
     return (
-      <div>
-        <p>Game over! Your score is: {score}</p>
-        <a href={tweetUrl} target="_blank" rel="noopener noreferrer">
+      <div className='fs-1'>
+        <p>Game over! Your score is: {Math.round(score/quizLength)*100}%</p>
+        <a href={tweetUrl} target="_blank" rel="noopener noreferrer"
+        className='btn btn-primary me-2'
+        >
           Tweet Score
         </a>
-        <button
+        <Button
+        variant="secondary"
+        className='btn btn-primary fw-bold'
           onClick={() => {
             setCurrentQuestionIndex(0);
             setScore(0);
@@ -75,8 +80,8 @@ const TriviaGame = () => {
             setShowingAnswer(false);
           }}
         >
-          Restart
-        </button>
+          Go again!
+        </Button>
       </div>
     );
   }
@@ -99,15 +104,13 @@ const TriviaGame = () => {
   };
 
   return (
-    <div>
-      <p>{decodedQuestion}</p>
-      <ul>
-        
+    <div className='fs-4'>
+      <p className='p-8'>{decodedQuestion}</p>
+      <div className="d-grid gap-2">        
         {currentQuestion.incorrect_answers.map((answer, index) => (
           <>
             {index === correctAnswerInsertionIndex && 
-              <li>
-                <button
+                <Button variant="secondary"
                   onClick={() => {
                     handleAnswer(decodeHTML(currentQuestion.correct_answer));
                   }}
@@ -119,11 +122,10 @@ const TriviaGame = () => {
                   }
                 >
                   {decodeHTML(currentQuestion.correct_answer)}
-                </button>
-              </li>
+                </Button>
             }
-            <li key={index}>
-              <button
+              <Button variant="secondary"
+              key={index}
                 onClick={() => {
                   handleAnswer(decodeHTML(answer));
                 }}
@@ -134,12 +136,11 @@ const TriviaGame = () => {
                 }
               >
                 {decodeHTML(answer)}
-              </button>
-            </li>
+              </Button>
           </>
         ))}
         
-      </ul>
+      </div>
       <p>
         Correct: {score} Incorrect: {incorrectCount}
       </p>
@@ -149,8 +150,8 @@ const TriviaGame = () => {
 
 const App = () => {
   return (
-    <div className='container container-xxl text-center m-4 p-4'>
-      <img src={logo} alt="Qwzya" className='logo' width="50%" />
+    <div className='container container-xxl text-center p-4'>
+      <img src={logo} alt="Qwzya" className='logo' width="50%" className='mb-4' />
       <p>What do you know?</p>
       <TriviaGame />
     </div>

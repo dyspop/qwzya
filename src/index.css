@@ -18,3 +18,11 @@ code {
   max-width: 360px;
   min-width: 120px;
 }
+
+li {
+  list-style: none;
+}
+
+.btn {
+  border-width: 0 !important;
+}
