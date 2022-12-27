@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import logo from './logo.svg';
+
 
 const randomInteger = (i) => {
   return Math.floor(i * Math.random());
@@ -98,7 +100,6 @@ const TriviaGame = () => {
   return (
     <div>
       <p>{decodedQuestion}</p>
-      {/* {console.log(currentQuestion)} */}
       <ul>
         
         {currentQuestion.incorrect_answers.map((answer, index) => (
@@ -145,4 +146,14 @@ const TriviaGame = () => {
   );
 };
 
-export default TriviaGame;
+const App = () => {
+  return (
+    <>
+      <img src={logo} alt="Qwzya" />
+      <p>What do you know?</p>
+      <TriviaGame />
+    </>
+  )
+}
+
+export default App;
