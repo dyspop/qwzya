@@ -29,7 +29,7 @@ const TriviaGame = () => {
 
   // Generate the URL for the Twitter web intent for creating a new tweet
   const tweetUrl = encodeURI(
-    `https://twitter.com/intent/tweet?url=https://qwzya.com&text=I just scored ${Math.round(score/quizLength)*100}% in the Trivia Game on Qwzya! Can you beat me? #trivia #game #qwzya`
+    `https://twitter.com/intent/tweet?url=https://qwzya.com&text=I just scored ${Math.round(score/quizLength*100)}% in the Trivia Game on Qwzya! Can you beat me? #trivia #game #qwzya`
   );
 
   // Fetch a set of questions from the Open Trivia DB API
@@ -64,7 +64,7 @@ const TriviaGame = () => {
   if (currentQuestionIndex >= questions.length) {
     return (
       <div className='fs-1'>
-        <p>Game over! Your score is: {Math.round(score/quizLength)*100}%</p>
+        <p>Game over! Your score is: {Math.round(score/quizLength*100)}%</p>
         <a href={tweetUrl} target="_blank" rel="noopener noreferrer"
         className='btn btn-primary me-2'
         >
