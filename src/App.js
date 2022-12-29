@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import logo from './logo.svg';
 import Button from 'react-bootstrap/Button';
+import Form from 'react-bootstrap/Form'
 
 
 
@@ -15,7 +16,7 @@ const decodeHTML = (html) => {
   return txt.value;
 };
 
-const TriviaGame = () => {
+const TriviaGame = ({ difficulty }) => {
   // Initialize state variables for the game
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -37,7 +38,7 @@ const TriviaGame = () => {
     const fetchQuestions = async () => {
       try {
         const response = await axios.get(
-          `https://opentdb.com/api.php?amount=${quizLength}&category=9&difficulty=easy&type=multiple`
+          `https://opentdb.com/api.php?amount=${quizLength}&category=9&difficulty=${difficulty}&type=multiple`
         );
         setQuestions(response.data.results);
         setLoading(false);
@@ -64,6 +65,7 @@ const TriviaGame = () => {
   if (currentQuestionIndex >= questions.length) {
     return (
       <div className='fs-1'>
+
         <p>Game over! Your score is: {Math.round(score / quizLength * 100)}%</p>
         <a href={tweetUrl} target="_blank" rel="noopener noreferrer"
           className='btn btn-primary me-2'
@@ -109,40 +111,40 @@ const TriviaGame = () => {
 
       <div class="container">
         <div class="row gap-2">
-        {currentQuestion.incorrect_answers.map((answer, index) => (
-          <>
-            {index === correctAnswerInsertionIndex &&
+          {currentQuestion.incorrect_answers.map((answer, index) => (
+            <>
+              {index === correctAnswerInsertionIndex &&
+                <Button variant="secondary"
+                  className='col-sm'
+                  onClick={() => {
+                    handleAnswer(decodeHTML(currentQuestion.correct_answer));
+                  }}
+                  style={
+                    showingAnswer &&
+                      decodeHTML(currentQuestion.correct_answer) === currentQuestion.correct_answer
+                      ? { backgroundColor: 'green' }
+                      : {}
+                  }
+                >
+                  {decodeHTML(currentQuestion.correct_answer)}
+                </Button>
+              }
               <Button variant="secondary"
                 className='col-sm'
+                key={index}
                 onClick={() => {
-                  handleAnswer(decodeHTML(currentQuestion.correct_answer));
+                  handleAnswer(decodeHTML(answer));
                 }}
                 style={
-                  showingAnswer &&
-                    decodeHTML(currentQuestion.correct_answer) === currentQuestion.correct_answer
-                    ? { backgroundColor: 'green' }
+                  showingAnswer && answer !== currentQuestion.correct_answer
+                    ? { backgroundColor: 'red' }
                     : {}
                 }
               >
-                {decodeHTML(currentQuestion.correct_answer)}
+                {decodeHTML(answer)}
               </Button>
-            }
-            <Button variant="secondary"
-              className='col-sm'
-              key={index}
-              onClick={() => {
-                handleAnswer(decodeHTML(answer));
-              }}
-              style={
-                showingAnswer && answer !== currentQuestion.correct_answer
-                  ? { backgroundColor: 'red' }
-                  : {}
-              }
-            >
-              {decodeHTML(answer)}
-            </Button>
-          </>
-        ))}
+            </>
+          ))}
         </div>
       </div>
 
@@ -191,11 +193,31 @@ const TriviaGame = () => {
 };
 
 const App = () => {
+
+  const [difficulty, setDifficulty] = useState('easy');
+
   return (
     <div className='container container-xxl text-center p-4'>
       <img src={logo} alt="Qwzya" className='logo mb-4' width="50%" />
       <p>What do you know?</p>
-      <TriviaGame />
+      <TriviaGame difficulty={difficulty} />
+      {/* {difficulty} */}
+
+      <Form.Group controlId="formBasicSelect">
+        <Form.Label>Difficulty</Form.Label>
+        <Form.Select
+          value={difficulty}
+          onChange={(e: any) => setDifficulty(e.currentTarget.value)}
+        >
+          <option value="easy">Easy</option>
+          <option value="medium">Medium</option>
+          <option value="hard">Hard</option>
+        </Form.Select>
+      </Form.Group>
+
+      <div onClick={() => setDifficulty('hard')}>hi</div>
+      {difficulty}
+
     </div>
   )
 }
