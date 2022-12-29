@@ -29,7 +29,7 @@ const TriviaGame = () => {
 
   // Generate the URL for the Twitter web intent for creating a new tweet
   const tweetUrl = encodeURI(
-    `https://twitter.com/intent/tweet?url=https://qwzya.com&text=I just scored ${Math.round(score/quizLength*100)}% in the Trivia Game on Qwzya! Can you beat me? #trivia #game #qwzya`
+    `https://twitter.com/intent/tweet?url=https://qwzya.com&text=I just scored ${Math.round(score / quizLength * 100)}% in the Trivia Game on Qwzya! Can you beat me? #trivia #game #qwzya`
   );
 
   // Fetch a set of questions from the Open Trivia DB API
@@ -64,15 +64,15 @@ const TriviaGame = () => {
   if (currentQuestionIndex >= questions.length) {
     return (
       <div className='fs-1'>
-        <p>Game over! Your score is: {Math.round(score/quizLength*100)}%</p>
+        <p>Game over! Your score is: {Math.round(score / quizLength * 100)}%</p>
         <a href={tweetUrl} target="_blank" rel="noopener noreferrer"
-        className='btn btn-primary me-2'
+          className='btn btn-primary me-2'
         >
           Tweet Score
         </a>
         <Button
-        variant="secondary"
-        className='btn btn-primary fw-bold'
+          variant="secondary"
+          className='btn btn-primary fw-bold'
           onClick={() => {
             setCurrentQuestionIndex(0);
             setScore(0);
@@ -106,41 +106,83 @@ const TriviaGame = () => {
   return (
     <div className='fs-4'>
       <p className='p-8'>{decodedQuestion}</p>
-      <div className="d-grid gap-2">        
+
+      <div class="container">
+        <div class="row gap-2">
         {currentQuestion.incorrect_answers.map((answer, index) => (
           <>
-            {index === correctAnswerInsertionIndex && 
-                <Button variant="secondary"
-                  onClick={() => {
-                    handleAnswer(decodeHTML(currentQuestion.correct_answer));
-                  }}
-                  style={
-                    showingAnswer &&
-                    decodeHTML(currentQuestion.correct_answer) === currentQuestion.correct_answer
-                      ? { backgroundColor: 'green' }
-                      : {}
-                  }
-                >
-                  {decodeHTML(currentQuestion.correct_answer)}
-                </Button>
-            }
+            {index === correctAnswerInsertionIndex &&
               <Button variant="secondary"
-              key={index}
+                className='col-sm'
                 onClick={() => {
-                  handleAnswer(decodeHTML(answer));
+                  handleAnswer(decodeHTML(currentQuestion.correct_answer));
                 }}
                 style={
-                  showingAnswer && answer !== currentQuestion.correct_answer
-                    ? { backgroundColor: 'red' }
+                  showingAnswer &&
+                    decodeHTML(currentQuestion.correct_answer) === currentQuestion.correct_answer
+                    ? { backgroundColor: 'green' }
                     : {}
                 }
               >
-                {decodeHTML(answer)}
+                {decodeHTML(currentQuestion.correct_answer)}
               </Button>
+            }
+            <Button variant="secondary"
+              className='col-sm'
+              key={index}
+              onClick={() => {
+                handleAnswer(decodeHTML(answer));
+              }}
+              style={
+                showingAnswer && answer !== currentQuestion.correct_answer
+                  ? { backgroundColor: 'red' }
+                  : {}
+              }
+            >
+              {decodeHTML(answer)}
+            </Button>
           </>
         ))}
-        
+        </div>
       </div>
+
+      {/* <div className="d-grid gap-2 grid-cols cols-2">
+        {currentQuestion.incorrect_answers.map((answer, index) => (
+          <>
+            {index === correctAnswerInsertionIndex &&
+              <Button variant="secondary"
+                className='col-1'
+                onClick={() => {
+                  handleAnswer(decodeHTML(currentQuestion.correct_answer));
+                }}
+                style={
+                  showingAnswer &&
+                    decodeHTML(currentQuestion.correct_answer) === currentQuestion.correct_answer
+                    ? { backgroundColor: 'green' }
+                    : {}
+                }
+              >
+                {decodeHTML(currentQuestion.correct_answer)}
+              </Button>
+            }
+            <Button variant="secondary"
+              className='col-1'
+              key={index}
+              onClick={() => {
+                handleAnswer(decodeHTML(answer));
+              }}
+              style={
+                showingAnswer && answer !== currentQuestion.correct_answer
+                  ? { backgroundColor: 'red' }
+                  : {}
+              }
+            >
+              {decodeHTML(answer)}
+            </Button>
+          </>
+        ))}
+
+      </div> */}
       <p>
         Correct: {score} Incorrect: {incorrectCount}
       </p>
