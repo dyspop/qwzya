@@ -2,9 +2,8 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import logo from './logo.svg';
 import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form'
-
-
+import Form from 'react-bootstrap/Form';
+import Card from 'react-bootstrap/Card';
 
 const randomInteger = (i) => {
   return Math.floor(i * Math.random());
@@ -16,7 +15,7 @@ const decodeHTML = (html) => {
   return txt.value;
 };
 
-const TriviaGame = ({ difficulty }) => {
+const TriviaGame = () => {
   // Initialize state variables for the game
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -27,6 +26,7 @@ const TriviaGame = ({ difficulty }) => {
   const [showingAnswer, setShowingAnswer] = useState(false);
   const [correctAnswerInsertionIndex, setCorrectAnswerInsertionIndex] = useState(0);
   const [quizLength, setQuizLength] = useState(10);
+  const [difficulty, setDifficulty] = useState('easy');
 
   // Generate the URL for the Twitter web intent for creating a new tweet
   const tweetUrl = encodeURI(
@@ -64,27 +64,58 @@ const TriviaGame = ({ difficulty }) => {
   }
   if (currentQuestionIndex >= questions.length) {
     return (
-      <div className='fs-1'>
 
-        <p>Game over! Your score is: {Math.round(score / quizLength * 100)}%</p>
-        <a href={tweetUrl} target="_blank" rel="noopener noreferrer"
-          className='btn btn-primary me-2'
-        >
-          Tweet Score
-        </a>
-        <Button
-          variant="secondary"
-          className='btn btn-primary fw-bold'
-          onClick={() => {
-            setCurrentQuestionIndex(0);
-            setScore(0);
-            setIncorrectCount(0);
-            setShowingAnswer(false);
-          }}
-        >
-          Go again!
-        </Button>
-      </div>
+
+      <Card className='shadow-lg col-12 col-md-9 col-lg-6 m-auto'>
+        <Card.Body>
+          <Card.Title className='text-capitalize border-bottom pb-3 fs-6'>Game over!</Card.Title>
+          <Card.Text className='fs-2'>
+            Your score is: {Math.round(score / quizLength * 100)}%
+
+
+          </Card.Text>
+          <Card.Text className='border-bottom mb-4 pb-4'>
+            <a href={tweetUrl} target="_blank" rel="noopener noreferrer"
+              className='btn btn-primary me-2'
+            >
+              Tweet Score
+            </a>
+          </Card.Text>
+
+          <Card.Text>
+            <Form.Group controlId="formBasicSelect" className='m-auto'>
+              <Form.Label className='fs-6 w-25'>Difficulty</Form.Label>
+              <Form.Select
+                className='w-25 m-auto'
+                value={difficulty}
+                onChange={(e: any) => setDifficulty(e.currentTarget.value)}
+              >
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+              </Form.Select>
+            </Form.Group>
+          </Card.Text>
+
+        </Card.Body>
+        <Card.Footer className='d-grid'>
+          <Button
+            variant="secondary"
+            className='btn btn-secondary fw-bold btn-lg'
+            onClick={() => {
+              setCurrentQuestionIndex(0);
+              setScore(0);
+              setIncorrectCount(0);
+              setShowingAnswer(false);
+            }}
+          >
+            Go again!
+          </Button>
+        </Card.Footer>
+      </Card>
+
+
+
     );
   }
 
@@ -107,45 +138,58 @@ const TriviaGame = ({ difficulty }) => {
 
   return (
     <div className='fs-4'>
-      <p className='p-8'>{decodedQuestion}</p>
+      <p className='p-8'></p>
 
       <div class="container">
-        <div class="row gap-2">
-          {currentQuestion.incorrect_answers.map((answer, index) => (
-            <>
-              {index === correctAnswerInsertionIndex &&
-                <Button variant="secondary"
-                  className='col-sm'
-                  onClick={() => {
-                    handleAnswer(decodeHTML(currentQuestion.correct_answer));
-                  }}
-                  style={
-                    showingAnswer &&
-                      decodeHTML(currentQuestion.correct_answer) === currentQuestion.correct_answer
-                      ? { backgroundColor: 'green' }
-                      : {}
-                  }
-                >
-                  {decodeHTML(currentQuestion.correct_answer)}
-                </Button>
-              }
-              <Button variant="secondary"
-                className='col-sm'
-                key={index}
-                onClick={() => {
-                  handleAnswer(decodeHTML(answer));
-                }}
-                style={
-                  showingAnswer && answer !== currentQuestion.correct_answer
-                    ? { backgroundColor: 'red' }
-                    : {}
-                }
-              >
-                {decodeHTML(answer)}
-              </Button>
-            </>
-          ))}
+
+        <div className='row mb-4'>
+          <Card className='shadow-lg col-12 col-md-9 col-lg-6 m-auto'>
+            <Card.Body>
+              <Card.Title className='text-capitalize border-bottom pb-3 fs-6'>{difficulty} Quiz</Card.Title>
+              <Card.Text>
+                {decodedQuestion}
+              </Card.Text>
+              <div class="row gap-2">
+                {currentQuestion.incorrect_answers.map((answer, index) => (
+                  <>
+                    {index === correctAnswerInsertionIndex &&
+                      <Button variant="secondary"
+                        className='col-sm'
+                        onClick={() => {
+                          handleAnswer(decodeHTML(currentQuestion.correct_answer));
+                        }}
+                        style={
+                          showingAnswer &&
+                            decodeHTML(currentQuestion.correct_answer) === currentQuestion.correct_answer
+                            ? { backgroundColor: 'green' }
+                            : {}
+                        }
+                      >
+                        {decodeHTML(currentQuestion.correct_answer)}
+                      </Button>
+                    }
+                    <Button variant="secondary"
+                      className='col-sm'
+                      key={index}
+                      onClick={() => {
+                        handleAnswer(decodeHTML(answer));
+                      }}
+                      style={
+                        showingAnswer && answer !== currentQuestion.correct_answer
+                          ? { backgroundColor: 'red' }
+                          : {}
+                      }
+                    >
+                      {decodeHTML(answer)}
+                    </Button>
+                  </>
+                ))}
+              </div>
+            </Card.Body>
+          </Card>
         </div>
+
+
       </div>
 
       {/* <div className="d-grid gap-2 grid-cols cols-2">
@@ -194,30 +238,12 @@ const TriviaGame = ({ difficulty }) => {
 
 const App = () => {
 
-  const [difficulty, setDifficulty] = useState('easy');
 
   return (
     <div className='container container-xxl text-center p-4'>
       <img src={logo} alt="Qwzya" className='logo mb-4' width="50%" />
       <p>What do you know?</p>
-      <TriviaGame difficulty={difficulty} />
-      {/* {difficulty} */}
-
-      <Form.Group controlId="formBasicSelect">
-        <Form.Label>Difficulty</Form.Label>
-        <Form.Select
-          value={difficulty}
-          onChange={(e: any) => setDifficulty(e.currentTarget.value)}
-        >
-          <option value="easy">Easy</option>
-          <option value="medium">Medium</option>
-          <option value="hard">Hard</option>
-        </Form.Select>
-      </Form.Group>
-
-      <div onClick={() => setDifficulty('hard')}>hi</div>
-      {difficulty}
-
+      <TriviaGame />
     </div>
   )
 }
