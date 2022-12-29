@@ -151,7 +151,7 @@ const TriviaGame = () => {
 const App = () => {
   return (
     <div className='container container-xxl text-center p-4'>
-      <img src={logo} alt="Qwzya" className='logo' width="50%" className='mb-4' />
+      <img src={logo} alt="Qwzya" className='logo mb-4' width="50%" />
       <p>What do you know?</p>
       <TriviaGame />
     </div>
