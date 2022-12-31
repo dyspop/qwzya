@@ -23,6 +23,7 @@ const TriviaGame = () => {
   const [incorrectCount, setIncorrectCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [refresh, setRefresh] = useState(false);
   const [showingAnswer, setShowingAnswer] = useState(false);
   const [correctAnswerInsertionIndex, setCorrectAnswerInsertionIndex] = useState(0);
   const [quizLength, setQuizLength] = useState(10);
@@ -48,7 +49,7 @@ const TriviaGame = () => {
       }
     };
     fetchQuestions();
-  }, []);
+  }, [refresh]);
 
   // Assuming there are always four choices we can randomly get an index to put the answer at so that it's not always in the same place and therefore easily guessed
   useEffect(() => {
@@ -107,6 +108,7 @@ const TriviaGame = () => {
               setScore(0);
               setIncorrectCount(0);
               setShowingAnswer(false);
+              setRefresh(true);
             }}
           >
             Go again!
