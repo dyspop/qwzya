@@ -31,7 +31,7 @@ const TriviaGame = () => {
 
   // Generate the URL for the Twitter web intent for creating a new tweet
   const tweetUrl = encodeURI(
-    `https://twitter.com/intent/tweet?url=https://qwzya.com&text=I just scored ${Math.round(score / quizLength * 100)}% in the Trivia Game on Qwzya! Can you beat me? #trivia #game #qwzya`
+    `https://twitter.com/intent/tweet?url=https://qwzya.com&text=I just scored ${Math.round(score / quizLength * 100)}% in the ${difficulty} Trivia Game on Qwzya! Can you beat me?&hashtags=games,trivia,quiz,quizzes,qwzya`
   );
 
   // Fetch a set of questions from the Open Trivia DB API
@@ -87,7 +87,7 @@ const TriviaGame = () => {
             <Form.Group controlId="formBasicSelect" className='m-auto'>
               <Form.Label className='fs-6 w-25'>Difficulty</Form.Label>
               <Form.Select
-                className='w-25 m-auto'
+                className='w-auto m-auto'
                 value={difficulty}
                 onChange={(e: any) => setDifficulty(e.currentTarget.value)}
               >
