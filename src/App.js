@@ -240,12 +240,18 @@ const TriviaGame = () => {
 
 const App = () => {
 
+  const [gameStarted, setGameStarted] = useState(false);
+
 
   return (
     <div className='container container-xxl text-center p-4'>
-      <img src={logo} alt="Qwzya" className='logo mb-4' width="50%" />
-      <p>What do you know?</p>
-      <TriviaGame />
+      <img src={logo} alt="Qwzya" className='logo mb-4' width="20%" />
+      <p>Fun trivia games for free! Compare with friends on social media!</p>
+      <hr />
+      { gameStarted ? <TriviaGame /> : 
+        <>Pick a game category and difficulty to start!</>
+      }
+      
     </div>
   )
 }
