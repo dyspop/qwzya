@@ -26,3 +26,7 @@ li {
 .btn {
   border-width: 0 !important;
 }
+
+.btn-secondary {
+  background-color: #6c757d;
+}
