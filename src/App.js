@@ -9,13 +9,22 @@ const randomInteger = (i) => {
   return Math.floor(i * Math.random());
 }
 
+const sliceIntoChunks = (arr, chunkSize) => {
+  const res = [];
+  for (let i = 0; i < arr.length; i += chunkSize) {
+      const chunk = arr.slice(i, i + chunkSize);
+      res.push(chunk);
+  }
+  return res;
+}
+
 const decodeHTML = (html) => {
   const txt = document.createElement('textarea');
   txt.innerHTML = html;
   return txt.value;
 };
 
-const TriviaGame = () => {
+const TriviaGame = ({categoryId, categoryName, difficulty}) => {
   // Initialize state variables for the game
   const [questions, setQuestions] = useState([]);
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
@@ -27,19 +36,21 @@ const TriviaGame = () => {
   const [showingAnswer, setShowingAnswer] = useState(false);
   const [correctAnswerInsertionIndex, setCorrectAnswerInsertionIndex] = useState(0);
   const [quizLength, setQuizLength] = useState(10);
-  const [difficulty, setDifficulty] = useState('easy');
 
   // Generate the URL for the Twitter web intent for creating a new tweet
   const tweetUrl = encodeURI(
-    `https://twitter.com/intent/tweet?url=https://qwzya.com&text=I just scored ${Math.round(score / quizLength * 100)}% in the ${difficulty} Trivia Game on Qwzya! Can you beat me?&hashtags=games,trivia,quiz,quizzes,qwzya`
+    `https://twitter.com/intent/tweet?url=https://qwzya.com&text=I just scored ${Math.round(score / quizLength * 100)}% in the ${difficulty} ${categoryName.replace('Entertainment: ', '')
+    .replace('Science: ', '')} Trivia Game on Qwzya! Can you beat me?&hashtags=games,trivia,quiz,quizzes,qwzya`
   );
+
+ 
 
   // Fetch a set of questions from the Open Trivia DB API
   useEffect(() => {
     const fetchQuestions = async () => {
       try {
         const response = await axios.get(
-          `https://opentdb.com/api.php?amount=${quizLength}&category=9&difficulty=${difficulty}&type=multiple`
+          `https://opentdb.com/api.php?amount=${quizLength}&category=${categoryId}&difficulty=${difficulty}&type=multiple`
         );
         setQuestions(response.data.results);
         setLoading(false);
@@ -75,7 +86,7 @@ const TriviaGame = () => {
 
 
           </Card.Text>
-          <Card.Text className='border-bottom mb-4 pb-4'>
+          <Card.Text className='mb-4 pb-4'>
             <a href={tweetUrl} target="_blank" rel="noopener noreferrer"
               className='btn btn-primary me-2'
             >
@@ -83,37 +94,10 @@ const TriviaGame = () => {
             </a>
           </Card.Text>
 
-          <Card.Text>
-            <Form.Group controlId="formBasicSelect" className='m-auto'>
-              <Form.Label className='fs-6 w-25'>Difficulty</Form.Label>
-              <Form.Select
-                className='w-auto m-auto'
-                value={difficulty}
-                onChange={(e: any) => setDifficulty(e.currentTarget.value)}
-              >
-                <option value="easy">Easy</option>
-                <option value="medium">Medium</option>
-                <option value="hard">Hard</option>
-              </Form.Select>
-            </Form.Group>
-          </Card.Text>
+      
 
         </Card.Body>
-        <Card.Footer className='d-grid'>
-          <Button
-            variant="secondary"
-            className='btn btn-secondary fw-bold btn-lg'
-            onClick={() => {
-              setCurrentQuestionIndex(0);
-              setScore(0);
-              setIncorrectCount(0);
-              setShowingAnswer(false);
-              setRefresh(true);
-            }}
-          >
-            Go again!
-          </Button>
-        </Card.Footer>
+        
       </Card>
 
 
@@ -147,7 +131,8 @@ const TriviaGame = () => {
         <div className='row mb-4'>
           <Card className='shadow-lg col-12 col-md-9 col-lg-6 m-auto'>
             <Card.Body>
-              <Card.Title className='text-capitalize border-bottom pb-3 fs-6'>{difficulty} Quiz</Card.Title>
+              <Card.Title className='text-capitalize border-bottom pb-3 fs-6'>{difficulty} {categoryName.replace('Entertainment: ', '')
+                          .replace('Science: ', '')} Quiz</Card.Title>
               <Card.Text>
                 {decodedQuestion}
               </Card.Text>
@@ -241,16 +226,102 @@ const TriviaGame = () => {
 const App = () => {
 
   const [gameStarted, setGameStarted] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  // 9 is general knowledge from api
+  const [selectedCategoryId, setSelectedCategoryId] = useState(9);
+  const [selectedCategoryName, setSelectedCategoryName] = useState(''); 
+  const [difficulty, setDifficulty] = useState('easy');
+
+   // Fetch categories from the Open Trivia DB API
+   useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get('https://opentdb.com/api_category.php');
+        setCategories(response.data);
+        setLoading(false);
+      } catch (error) {
+        setError(error);
+        setLoading(false);
+      }
+    };
+    fetchCategories();
+  }, []);
 
 
   return (
     <div className='container container-xxl text-center p-4'>
-      <img src={logo} alt="Qwzya" className='logo mb-4' width="20%" />
-      <p>Fun trivia games for free! Compare with friends on social media!</p>
+      <img src={logo} alt="Qwzya" className='logo mb-2' width="20%" />
+      <p><small>Fun trivia games for free!<br />Compare with friends on social media!</small></p>
       <hr />
-      { gameStarted ? <TriviaGame /> : 
-        <>Pick a game category and difficulty to start!</>
+      { gameStarted ? <>
+      <div>
+      <TriviaGame
+          categoryId={selectedCategoryId}
+          categoryName={selectedCategoryName}
+          difficulty={difficulty}
+        />
+      </div>
+        
+        <a className="mt-3 btn btn-tertiary border" onClick={() => {
+          setGameStarted(false);
+          setSelectedCategoryName('');
+          setSelectedCategoryId(9);
+        }}>
+
+          ↺ Restart</a>
+      </> : 
+        <>Pick a game category and difficulty to start!
+        <br/>
+        <div className='container pt-3'>
+
+          <Card.Text>
+            <Form.Group controlId="formBasicSelect" className='m-auto'>
+              <Form.Select
+                className='w-100 m-auto'
+                value={difficulty}
+                onChange={(e: any) => setDifficulty(e.currentTarget.value)}
+              >
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+              </Form.Select>
+            </Form.Group>
+          </Card.Text>
+
+          {loading ? <div>loading categories...</div> : 
+            <>
+              {sliceIntoChunks(categories.trivia_categories, 4).map(chunk => 
+                <div className='grid row'>
+                  {chunk.map(category => 
+                    <div className="col-3 pb-4">
+                      <button
+                      onClick={() => {setGameStarted(true); setSelectedCategoryId(category.id); setSelectedCategoryName(category.name)}}
+                      className='btn w-100 rounded d-flex align-items-center justify-content-center' style={{minHeight: '90px', background: '#efefef'}}>
+                        {category.name
+                          .replace('Entertainment: ', '')
+                          .replace('Science: ', '')
+                        }
+                      </button>
+                      
+                    </div>
+                  )}
+                </div>  
+              )}
+              {/* <a className='btn btn-lg btn-primary px-4' style={{borderRadius: '99px'}} onClick={() => setGameStarted(true)}>Start new trivia quiz &rarr;</a> */}
+            </>
+          }
+
+           
+          
+        </div>
+
+
+        
+        </>
       }
+
       
     </div>
   )
