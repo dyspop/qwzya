@@ -4,6 +4,10 @@ import logo from './logo.svg';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Card from 'react-bootstrap/Card';
+import ReactGA from "react-ga4";
+
+ReactGA.initialize("G-0SBYTD29XZ");
+ReactGA.send("pageview");
 
 const randomInteger = (i) => {
   return Math.floor(i * Math.random());
