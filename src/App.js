@@ -39,15 +39,77 @@ const TriviaGame = ({categoryId, categoryName, difficulty}) => {
   const [refresh, setRefresh] = useState(false);
   const [showingAnswer, setShowingAnswer] = useState(false);
   const [correctAnswerInsertionIndex, setCorrectAnswerInsertionIndex] = useState(0);
-  const [quizLength, setQuizLength] = useState(10);
+  const [quizLength, setQuizLength] = useState(1);
 
-  // Generate the URL for the Twitter web intent for creating a new tweet
+  let socialText = `I just scored ${Math.round(score / quizLength * 100)}% in the ${difficulty} ${categoryName.replace('Entertainment: ', '').replace('Science: ', '')} Trivia Game on Qwzya! Can you beat me?`
+
+  // Generate the URLs for social sharing
+  const socialUrls = [
+    {
+      name: 'Twitter',
+      url: `https://twitter.com/intent/tweet?url=https://qwzya.com&text=${socialText}&hashtags=games,trivia,quiz,quizzes,qwzya`,
+    },
+    {
+      name: 'facebook',
+      url: `https://www.facebook.com/sharer/sharer.php?u=https://qwzya.com`,
+    },
+    {
+      name: 'LinkedIn',
+      url: `https://www.linkedin.com/shareArticle?mini=true&url=https://qwzya.com`,
+    },
+    {
+      name: 'Reddit',
+      url: `https://reddit.com/submit/?url=https://qwzya.com&title=${socialText}`,
+    },
+    // {
+    //   name: 'Xing',
+    //   url: `https://www.xing.com/social/share/spi?url=https://qwzya.com`,
+    // },
+    // {
+    //   name: 'Hacker News',
+    //   url: `https://news.ycombinator.com/submitlink?u=https://qwzya.com&t=${socialText}`,
+    // },
+    {
+      name: 'WhatsApp',
+      url:  `https://api.whatsapp.com/send?text=${socialText}`,
+    },
+    {
+      name: 'email',
+      url:  `mailto:?&subject=Can you beat my score?&cc=&bcc=&body=https://qwzya.com ${socialText}`,
+    },
+  ]
+
   const tweetUrl = encodeURI(
-    `https://twitter.com/intent/tweet?url=https://qwzya.com&text=I just scored ${Math.round(score / quizLength * 100)}% in the ${difficulty} ${categoryName.replace('Entertainment: ', '')
-    .replace('Science: ', '')} Trivia Game on Qwzya! Can you beat me?&hashtags=games,trivia,quiz,quizzes,qwzya`
+    `https://twitter.com/intent/tweet?url=https://qwzya.com&text=${socialText}&hashtags=games,trivia,quiz,quizzes,qwzya`
   );
 
+  const faceBookUrl = encodeURI(
+    `https://www.facebook.com/sharer/sharer.php?u=https://qwzya.com`
+  )
+
+  const pinterestUrl = encodeURI(
+    `https://twitter.com/intent/tweet?url=https://qwzya.com&text=${socialText}`
+  )
+
+  const linkedInUrl = encodeURI(
+    `https://www.linkedin.com/shareArticle?mini=true&url=https://qwzya.com`
+  )
+
+  const emailUrl = encodeURI(
+    `mailto:info@example.com?&subject=Can you beat my score?&cc=&bcc=&body=https://qwzya.com ${socialText}`
+  )
  
+  const redditUrl = encodeURI(
+    `https://reddit.com/submit/?url=https://qwzya.com&title=${socialText}`
+  )
+
+  const xingUrl = encodeURI(
+    `https://www.xing.com/social/share/spi?url=https://qwzya.com`
+  )
+
+  const hackerNewsUrl = encodeURI(
+    `https://news.ycombinator.com/submitlink?u=https://qwzya.com&t=${socialText}`
+  )
 
   // Fetch a set of questions from the Open Trivia DB API
   useEffect(() => {
@@ -90,12 +152,17 @@ const TriviaGame = ({categoryId, categoryName, difficulty}) => {
 
 
           </Card.Text>
-          <Card.Text className='mb-4 pb-4'>
-            <a href={tweetUrl} target="_blank" rel="noopener noreferrer"
-              className='btn btn-primary me-2'
+          <Card.Text className='m-4 pb-4 '>
+            <p>Share your score</p>
+            
+            {socialUrls.map(social => <a href={encodeURI(social.url)} target="_blank" rel="noopener noreferrer"
+              className='btn btn-tertiary me-2 border rounded mb-2'
             >
-              Tweet Score
-            </a>
+              <small><b>{social.name}</b></small>
+            </a>)}
+
+           
+
           </Card.Text>
 
       
