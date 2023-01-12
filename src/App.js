@@ -39,7 +39,7 @@ const TriviaGame = ({ categoryId, categoryName, difficulty }) => {
   const [refresh, setRefresh] = useState(false);
   const [showingAnswer, setShowingAnswer] = useState(false);
   const [correctAnswerInsertionIndex, setCorrectAnswerInsertionIndex] = useState(0);
-  const [quizLength, setQuizLength] = useState(1);
+  const [quizLength, setQuizLength] = useState(10);
 
   let socialText = `I just scored ${Math.round(score / quizLength * 100)}% in the ${difficulty} ${categoryName.replace('Entertainment: ', '').replace('Science: ', '')} Trivia Game on Qwzya! Can you beat me?`
 
