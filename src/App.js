@@ -777,13 +777,20 @@ const App = () => {
                 <div className='grid row'>
                   {chunk.map(category => 
                     <div className="col-6 col-md-3 pb-4">
+                     
                       <button
                       onClick={() => {setGameStarted(true); setSelectedCategoryId(category.id); setSelectedCategoryName(category.name)}}
-                      className='btn w-100 rounded d-flex align-items-center justify-content-center' style={{minHeight: '90px', background: '#efefef'}}>
-                        {category.name
+                      className='text-white fs-4 btn w-100 rounded d-flex align-items-center justify-content-center' style={{backgroundSize: 'cover', minHeight: '200px', backgroundImage: `url(/bgs/${
+                        category.name.toString().replace('Entertainment: ', '').replace('Science: ', '').replaceAll(' ', '').toLowerCase()
+                      }.jpg)`}}
+                      
+                      ><strong>
+{category.name
                           .replace('Entertainment: ', '')
                           .replace('Science: ', '')
                         }
+                      </strong>
+                        
                       </button>
                       
                     </div>
